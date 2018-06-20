@@ -6,7 +6,26 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  created () {
+    let wx = this._wx
+    const permissions = JSON.stringify(['onMenuShareTimeline', 'onMenuShareAppMessage'])
+    const url = document.location.href
+    this.$store.dispatch('getWxConfig', {
+      url: encodeURIComponent(this.Trim(url.split('#')[0])),
+      jsApiList: permissions
+    }).then(data => {
+      wx.config(data)
+    })
+    wx.ready(() => {
+      console.log(111)
+    })
+  },
+  methods: {
+    Trim (str) {
+      return str.replace(/(^\/*)|(\/*$)/g, '')
+    }
+  }
 }
 </script>
 

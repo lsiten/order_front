@@ -2,20 +2,23 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import FastClick from 'fastclick'
-import VueRouter from 'vue-router'
+import store from './vuex'
+import router from './router'
 import App from './App'
-import Home from './components/HelloFromVux'
 
-Vue.use(VueRouter)
+import { DatetimePlugin, BusPlugin, DevicePlugin, ToastPlugin, AlertPlugin, ConfirmPlugin, LoadingPlugin, WechatPlugin, AjaxPlugin } from 'vux'
 
-const routes = [{
-  path: '/',
-  component: Home
-}]
-
-const router = new VueRouter({
-  routes
-})
+// plugins
+Vue.use(DevicePlugin)
+Vue.use(ToastPlugin)
+Vue.use(AlertPlugin)
+Vue.use(ConfirmPlugin)
+Vue.use(LoadingPlugin)
+Vue.use(WechatPlugin)
+Vue.use(AjaxPlugin)
+Vue.use(BusPlugin)
+Vue.use(DatetimePlugin)
+Vue.prototype._wx = Vue.wechat
 
 FastClick.attach(document.body)
 
@@ -24,5 +27,6 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app-box')
