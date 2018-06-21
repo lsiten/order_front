@@ -1,11 +1,23 @@
 <template>
-  <div class="home-index">
-    <router-view></router-view>
+  <div class="home-index" style="height:100%;">
+    <view-box ref="viewBox" body-padding-bottom="46px" body-padding-top="46px">
+      <l-header slot="header" style="width:100%;position:absolute;left:0;top:0;z-index:100;"></l-header>
+      <router-view></router-view>
+      <l-bottom slot="bottom"></l-bottom>
+    </view-box>
   </div>
 </template>
 <script>
+import lHeader from '../components/com/header'
+import lbottom from '../components/com/bottom'
+import { ViewBox } from 'vux'
 export default {
   name: 'home',
+  components: {
+    'l-header': lHeader,
+    'l-bottom': lbottom,
+    ViewBox
+  },
   created () {
     let wx = this._wx
     const permissions = JSON.stringify(['chooseImage'])
