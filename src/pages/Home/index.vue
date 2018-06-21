@@ -25,6 +25,7 @@
             <flexbox-item>
               <scroller
                 ref = 'rightFood'
+                class="js-scroller-box"
                 lock-x
                 scrollbarY
                 height = '-280'
@@ -72,17 +73,50 @@ const foodData = [
   {
     id: 0,
     name: '托尔斯泰',
-    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰'
+    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
+    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
   },
   {
     id: 1,
     name: '托尔斯泰1',
-    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰'
+    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
+    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
   },
   {
     id: 2,
     name: '托尔斯泰2',
-    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰'
+    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
+    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
+  },
+  {
+    id: 2,
+    name: '托尔斯泰2',
+    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
+    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
+  },
+  {
+    id: 2,
+    name: '托尔斯泰2',
+    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
+    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
+  },
+  {
+    id: 2,
+    name: '托尔斯泰2',
+    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
+    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
+  },
+  {
+    id: 2,
+    name: '托尔斯泰2',
+    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
+    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
+  },
+  {
+    id: 2,
+    name: '托尔斯泰2',
+    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
+    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
   }
 ]
 export default {
