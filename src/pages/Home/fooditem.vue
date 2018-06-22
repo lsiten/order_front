@@ -30,10 +30,12 @@ export default {
   },
   watch: {
     foodNumber (value) {
-      console.log(value)
+      this.food.num = value
+      this.$store.dispatch('bottom_add_basket', this.food)
     }
   },
   created () {
+    this.foodNumber = this.food.num || 0
   },
   components: {
     Flexbox,

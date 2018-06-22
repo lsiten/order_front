@@ -14,10 +14,12 @@
                 scrollbarY
                 :bounce = 'false'
                 height = '-280'
+                :scroll-bottom-offset = '100'
+                @on-scroll-bottom = 'getCateData'
               >
                 <div class="food-cate-class">
                   <group title="菜品分类" class="no-margin-top">
-                    <cell v-for="(item, index) in cateData" :title="item.value" v-bind:key="index"></cell>
+                    <cell :class="(index === cateValue) ? 'cate-active' : ''" v-for="(item, index) in cateData" :title="item.name" v-bind:key="index" @click.native="changeCate(index)"></cell>
                   </group>
                 </div>
               </scroller>
@@ -29,9 +31,16 @@
                 lock-x
                 scrollbarY
                 height = '-280'
+                :scroll-bottom-offset = '100'
+                @on-scroll-bottom = 'getFoodDataMore'
               >
-                <div >
-                  <fooditem v-for="(item1, index1) in foodData" v-bind:key="index1" :food="item1"></fooditem>
+                <div>
+                  <group :ref = "'cate_' + item1.id" :title="item1.name" class="white-background" v-for="(item1, index1) in foodData" v-bind:key="index1">
+                    <fooditem v-show="item1.food.length > 0" v-for="(item2, index2) in item1.food" v-bind:key="index2" :food="item2"></fooditem>
+                    <div v-show="!item1.food.length" class="no-data-tips">
+                      暂无数据
+                    </div>
+                  </group>
                 </div>
               </scroller>
             </flexbox-item>
@@ -43,98 +52,47 @@
 <script>
 import { Flexbox, FlexboxItem, Swiper, Scroller, Group, Cell } from 'vux'
 import fooditem from './fooditem'
-const data = [{
-  url: 'javascript:',
-  img: 'https://static.vux.li/demo/1.jpg',
-  title: '送你一朵fua'
-}, {
-  url: 'javascript:',
-  img: 'https://static.vux.li/demo/5.jpg',
-  title: '送你一次旅行',
-  fallbackImg: 'https://static.vux.li/demo/3.jpg'
-}]
-
-const cateData = [
-  {
-    key: 0,
-    value: '托尔斯泰'
-  },
-  {
-    key: 1,
-    value: '托尔斯泰1'
-  },
-  {
-    key: 2,
-    value: '托尔斯泰2'
-  }
-]
-
-const foodData = [
-  {
-    id: 0,
-    name: '托尔斯泰',
-    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
-    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
-  },
-  {
-    id: 1,
-    name: '托尔斯泰1',
-    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
-    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
-  },
-  {
-    id: 2,
-    name: '托尔斯泰2',
-    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
-    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
-  },
-  {
-    id: 2,
-    name: '托尔斯泰2',
-    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
-    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
-  },
-  {
-    id: 2,
-    name: '托尔斯泰2',
-    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
-    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
-  },
-  {
-    id: 2,
-    name: '托尔斯泰2',
-    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
-    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
-  },
-  {
-    id: 2,
-    name: '托尔斯泰2',
-    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
-    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
-  },
-  {
-    id: 2,
-    name: '托尔斯泰2',
-    desc: '托尔斯泰托尔斯泰托尔斯泰托尔斯泰',
-    thumb: 'https://o5omsejde.qnssl.com/demo/test1.jpg'
-  }
-]
+import { mapGetters } from 'vuex'
 export default {
   name: 'Home-index',
-  data () {
-    return {
-      swiperdata: data,
-      swiperindex: 0,
-
-      cateData: cateData,
-      cateValue: 0,
-
-      foodData: foodData
-    }
+  computed: {
+    ...mapGetters({
+      swiperdata: 'home_get_banners',
+      cate_current_page: 'home_get_cate_current_page',
+      cate_page_size: 'home_get_cate_page_size',
+      cateData: 'home_get_categorys',
+      food_current_page: 'home_get_food_current_page',
+      food_page_size: 'home_get_food_page_size',
+      foodData: 'home_get_foods',
+      foodHasmore: 'home_get_foods_hasmore',
+      basket: 'bottom_get_shopping_basket'
+    })
+  },
+  created () {
+    // 获取banner
+    this.$store.dispatch('home_get_banners', {})
+    this.getCateData().then(() => {
+      let cateData = this.cateData
+      let currentCate = cateData[this.cateValue]
+      this.getFoods(currentCate)
+    })
   },
   watch: {
-    cateValue (value) {
-      console(value)
+    basket: {
+      deep: true,
+      handler: function () {
+        console.log(this.basket)
+      }
+    }
+  },
+  data () {
+    return {
+      swiperindex: 0,
+      cateValue: 0,
+      current_cate: '',
+      isLoading: false,
+      catePage: {},
+      foodScroller: null
     }
   },
   components: {
@@ -149,13 +107,116 @@ export default {
   methods: {
     onIndexChange (index) {
       console.log(index)
+    },
+    getCateData () {
+      return new Promise((resolve, reject) => {
+        let data = {
+          current_page: this.cate_current_page,
+          page_size: this.cate_page_size
+        }
+        this.$store.dispatch('home_get_categorys', data).then(data => {
+          resolve()
+        }).catch((err) => {
+          reject(err)
+        })
+      })
+    },
+    changeCate (index) {
+      this.cateValue = index
+      let cateData = this.cateData
+      let currentCate = cateData[index]
+      let currentPage = this.catePage[this.cateValue] || {
+        curent_page: 1,
+        hasMore: true
+      }
+      this.$store.dispatch('home_init_foods_current_page', currentPage)
+      this.getFoods(currentCate).then(() => {
+        this.$nextTick(() => {
+          let ref = 'cate_' + currentCate.id
+          let refDom = this.$refs[ref]
+          if (refDom) {
+            this.foodScroller.reset({
+              top: refDom[0].$el.offsetTop
+            })
+          }
+        })
+      })
+    },
+    getFoods (cateitem) {
+      if (this.isLoading) {
+        this.isLoading = false
+        return new Promise((resolve, reject) => {
+          resolve()
+        })
+      }
+      this.isLoading = true
+      let data = {
+        current_page: this.food_current_page,
+        page_size: this.food_page_size,
+        cid: cateitem.id
+      }
+      return new Promise((resolve, reject) => {
+        this.$store.dispatch('home_get_foods', {
+          data: data,
+          cate: cateitem
+        }).then(data => {
+          this.isLoading = false
+          resolve()
+        }).catch((err) => {
+          reject(err)
+        })
+      })
+    },
+    getFoodDebounce () {
+      if (this.isLoading) {
+        return false
+      }
+      let cateData = this.cateData
+      if (!this.foodHasmore) {
+        let index = this.cateValue + 1
+        if (index >= cateData.length) {
+          return ''
+        } else {
+          this.catePage[this.cateValue] = {
+            curent_page: this.food_current_page,
+            hasMore: this.foodHasmore
+          }
+          let nextPageContent = this.catePage[index]
+          if ((nextPageContent && nextPageContent.hasMore) || !nextPageContent) {
+            this.cateValue = index
+            let currentPage = this.catePage[this.cateValue] || {
+              curent_page: 1,
+              hasMore: true
+            }
+            this.$store.dispatch('home_init_foods_current_page', currentPage)
+          }
+        }
+      }
+
+      let currentCate = cateData[this.cateValue]
+      this.getFoods(currentCate)
+    },
+    getFoodDataMore () {
+      this.getFoodDebounce()
     }
+  },
+  mounted () {
+    this.foodScroller = this.$refs.rightFood
   }
 }
 </script>
 <style>
 .no-margin-top .weui-cells__title{
   margin-top: 5px;
+}
+.cate-active {
+  background: rgb(251, 249, 254);
+}
+.no-data-tips {
+  text-align: center;
+  font-size: 12px;
+  color: #b7b7b7;
+  padding: 10px 0;
 }
 </style>
 

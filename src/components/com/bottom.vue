@@ -59,33 +59,34 @@ export default {
     Group,
     Badge
   },
+  watch: {
+    basket: {
+      deep: true,
+      handler: function () {
+        this._initBasket()
+      }
+    },
+    totalNum () {
+      if (parseInt(this.totalNum) > 0) {
+        this.showBadge = true
+      }
+    }
+  },
   created () {
     if (parseInt(this.totalNum) > 0) {
       this.showBadge = true
     }
-
-    let fTemp = []
-    this.basket.map(item => {
-      let temp = {
-        id: item.id,
-        name: item.name,
-        num: item.num
-      }
-
-      fTemp.push(temp)
-    })
-
-    this.foodsTemp = fTemp
+    this._initBasket()
   },
   computed: {
     ...mapGetters({
       basket: 'bottom_get_shopping_basket',
-      totalNum: 'bottom_get_total'
+      totalNum: 'bottom_get_total',
+      foodPrice: 'bottom_get_all_price'
     })
   },
   data () {
     return {
-      foodPrice: 0,
       minPrice: 20,
       showSubmit: true,
       showDetail: false,
@@ -103,10 +104,26 @@ export default {
       console.log(22)
     },
     clearFood () {
-      console.log('clear')
+      this.$store.dispatch('bottom_clear_basket')
     },
     change (food) {
       console.log(food)
+    },
+    _initBasket () {
+      let fTemp = []
+      this.basket.map(item => {
+        let temp = {
+          id: item.id,
+          name: item.name,
+          num: item.num
+        }
+
+        fTemp.push(temp)
+      })
+      this.foodsTemp = []
+      this.$nextTick(() => {
+        this.foodsTemp = fTemp
+      })
     }
   }
 }
