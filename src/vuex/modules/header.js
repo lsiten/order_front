@@ -1,3 +1,4 @@
+import * as types from '../types'
 const state = {
   leftOption: {
     showBack: false, // 是否显示返回文字
@@ -6,6 +7,7 @@ const state = {
   },
   title: '小仙女',
   showMore: false,
+  showCenter: true,
   clickMore: () => {
     console.log('click more')
   },
@@ -25,14 +27,27 @@ const getters = {
   header_get_showMore: state => state.showMore,
   header_get_clickMore: state => state.clickMore,
   header_get_clickBack: state => state.clickBack,
+  header_get_showCenter: state => state.showCenter,
   header_get_clickTitle: state => state.clickTitle,
   header_get_gotoCenter: state => state.gotoCenter
 }
 
 const mutations = {
+  [types.HEADER_SET_SHOWBACK] (state, showBack) {
+    state.leftOption.showBack = showBack
+  },
+  [types.HEADER_SET_SHOWCENTER] (state, showCenter) {
+    state.showCenter = showCenter
+  }
 }
 
 const actions = {
+  header_set_show_back ({commit}, showBack) {
+    commit(types.HEADER_SET_SHOWBACK, showBack)
+  },
+  header_set_show_center ({commit}, center) {
+    commit(types.HEADER_SET_SHOWCENTER, center)
+  }
 }
 
 export default {

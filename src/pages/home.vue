@@ -10,7 +10,7 @@
 <script>
 import lHeader from '../components/com/header'
 import lbottom from '../components/com/bottom'
-import { ViewBox } from 'vux'
+import { ViewBox, querystring } from 'vux'
 export default {
   name: 'home',
   components: {
@@ -19,6 +19,11 @@ export default {
     ViewBox
   },
   created () {
+    let params = querystring.parse(window.location.search)
+    if (!params.id) {
+      this.$router.push({path: '/error'})
+      return ''
+    }
     let wx = this._wx
     const permissions = JSON.stringify(['chooseImage'])
     const url = document.location.href

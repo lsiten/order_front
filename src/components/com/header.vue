@@ -9,7 +9,7 @@
       @clickBack = 'clickBack'
       @clickTitle = 'clickTitle'
     >
-    <div slot="right">
+    <div slot="right" v-show="showCenter">
       <svg class="icon" aria-hidden="true" @click="gotoCenter">
           <use xlink:href="#xxn-user"></use>
       </svg>
@@ -33,6 +33,7 @@ export default {
       clickMore: 'header_get_clickMore',
       clickBack: 'header_get_clickBack',
       clickTitle: 'header_get_clickTitle',
+      showCenter: 'header_get_showCenter',
       gotoCenter: 'header_get_gotoCenter'
     })
   }

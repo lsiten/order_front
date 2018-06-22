@@ -3,13 +3,17 @@ const state = {
   shoppingBasket: [],
   deleteBasket: [],
   total: 0,
-  AllPrice: 0
+  AllPrice: 0,
+  showBottom: true,
+  bottomType: ''
 }
 const getters = {
   bottom_get_shopping_basket: state => state.shoppingBasket,
   bottom_get_delete_basket: state => state.deleteBasket,
   bottom_get_total: state => state.total,
-  bottom_get_all_price: state => state.AllPrice
+  bottom_get_all_price: state => state.AllPrice,
+  bottom_get_show_bottom: state => state.showBottom,
+  bottom_get_bottom_type: state => state.bottomType
 }
 
 const mutations = {
@@ -68,16 +72,37 @@ const mutations = {
     let shopLength = state.deleteBasket.length
     for (let i = 0; i < shopLength; i++) {
       let item = state.deleteBasket[i]
-      if (item.id === food.id) {
+      if (item && item.id === food.id) {
         state.deleteBasket.splice(i, 1)
       }
     }
+  },
+  [types.BOTTOM_SHOW_BOTTOM] (state, showBottom) {
+    state.showBottom = showBottom
+  },
+  [types.BOTTOM_SET_BOTTOM_TYPE] (state, type) {
+    state.bottomType = type
+  },
+  [types.BOTTOM_UPDATE_FOODS_BASKET] (state) {
+    let sum = 0
+    let AllPrice = 0
+    let shopLength = state.shoppingBasket.length
+    for (let i = 0; i < shopLength; i++) {
+      let item = state.shoppingBasket[i]
+      sum += item.num
+      AllPrice += item.num * item.price
+    }
+    state.total = sum
+    state.AllPrice = AllPrice
   }
 }
 
 const actions = {
   bottom_add_basket ({commit}, food) {
     commit(types.BOTTOM_ADD_FOODS_BASKET, food)
+  },
+  bottom_update_basket_total ({commit}) {
+    commit(types.BOTTOM_UPDATE_FOODS_BASKET)
   },
   bottom_clear_basket ({commit}, food) {
     commit(types.BOTTOM_CLEAR_FOODS_BASKET)
@@ -93,6 +118,18 @@ const actions = {
   },
   bottom_delete_basket_item ({commit}, food) {
     commit(types.BOTTOM_CHANGE_DELETE_BASKET, food)
+    return new Promise((resolve, reject) => {
+      resolve()
+    })
+  },
+  bottom_set_show ({commit}, showBottom) {
+    commit(types.BOTTOM_SHOW_BOTTOM, showBottom)
+    return new Promise((resolve, reject) => {
+      resolve()
+    })
+  },
+  bottom_set_type ({commit}, type) {
+    commit(types.BOTTOM_SET_BOTTOM_TYPE, type)
     return new Promise((resolve, reject) => {
       resolve()
     })

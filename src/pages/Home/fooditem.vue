@@ -37,7 +37,11 @@ export default {
   watch: {
     foodNumber (value) {
       this.food.num = value
-      this.$store.dispatch('bottom_add_basket', this.food)
+      if (value > 0) {
+        this.$store.dispatch('bottom_add_basket', this.food)
+      } else {
+        this.$store.dispatch('bottom_update_basket_total')
+      }
     }
   },
   created () {

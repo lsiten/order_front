@@ -1,45 +1,61 @@
 <template>
-  <div class="com-bottom">
-    <div class="shopping-basket">
-      <div class="shopping-basket-blue">
-        <badge v-show="showBadge" :text="totalNum" class="total-badge"></badge>
-        <svg class="icon" aria-hidden="true" @click="showBasketDetail">
-            <use xlink:href="#xxn-ai66"></use>
-        </svg>
+  <div>
+    <div v-show="showBottom" class="com-bottom">
+      <div class="shopping-basket">
+        <div class="shopping-basket-blue">
+          <badge v-show="showBadge" :text="totalNum" class="total-badge"></badge>
+          <svg class="icon" aria-hidden="true" @click="showBasketDetail">
+              <use xlink:href="#xxn-ai66"></use>
+          </svg>
+        </div>
       </div>
-    </div>
-    <div class="food-price">
-      ￥<span>{{foodPrice}}</span>
-    </div>
-
-    <div class="right-content" v-show="!showSubmit">
-      <p>还差￥<span>{{minPrice}}</span>可以买单</p>
-    </div>
-
-    <div class="right-content" v-show="showSubmit">
-      <div class="submit-button" @click="submitOrder">
-        结算
+      <div class="food-price">
+        ￥<span>{{foodPrice}}</span>
       </div>
-    </div>
-     <!-- 购物篮详情 -->
-     <div v-transfer-dom>
-      <popup v-model="showDetail" position="bottom" max-height="100%" :popup-style="{'bottom': '46px', 'z-index': 998}">
-        <div class="food-detail-content">
-          <div class="food-detail-header-box">
-            <span>已选商品</span>
-            <span class="clear-food" @click="clearFood">
-              <svg class="icon" aria-hidden="true" @click="showBasketDetail">
-                <use xlink:href="#xxn-lajitong"></use>
-            </svg>清空
-            </span>
+
+      <div class="right-content" v-show="!showSubmit">
+        <p>还差￥<span>{{minPrice}}</span>可以买单</p>
+      </div>
+
+      <div class="right-content" v-show="showSubmit">
+        <div class="submit-button" @click="submitOrder">
+          结算
+        </div>
+      </div>
+      <!-- 购物篮详情 -->
+      <div v-transfer-dom>
+        <popup v-model="showDetail" position="bottom" max-height="100%" :popup-style="{'bottom': '46px', 'z-index': 998}">
+          <div class="food-detail-content">
+            <div class="food-detail-header-box">
+              <span>已选商品</span>
+              <span class="clear-food" @click="clearFood">
+                <svg class="icon" aria-hidden="true" @click="showBasketDetail">
+                  <use xlink:href="#xxn-lajitong"></use>
+              </svg>清空
+              </span>
+            </div>
+            <div class="food-detail-header-food-item">
+              <group>
+                <x-number :min='0' v-for="(item, index) in foodsTemp" @on-change="change(item)" v-bind:key="index" :title="item.name" v-model="item.num"></x-number>
+              </group>
+            </div>
           </div>
-          <div class="food-detail-header-food-item">
-            <group>
-              <x-number :min='0' v-for="(item, index) in foodsTemp" @on-change="change(item)" v-bind:key="index" :title="item.name" v-model="item.num"></x-number>
-          </group>
+        </popup>
+      </div>
+    </div>
+    <div v-show="!showBottom">
+      <div v-show="bottomType">
+        <div :class="'bottom_' + bottomType">
+          <div class="food-price margin-left-15">
+            ￥<span>{{foodPrice}}</span>
+          </div>
+          <div class="right-content">
+            <div class="submit-button-order" @click="submitOrder">
+              下单
+            </div>
           </div>
         </div>
-      </popup>
+      </div>
     </div>
   </div>
 </template>
@@ -80,13 +96,14 @@ export default {
     } else {
       this.showBadge = false
     }
-    this._initBasket()
   },
   computed: {
     ...mapGetters({
       basket: 'bottom_get_shopping_basket',
       totalNum: 'bottom_get_total',
-      foodPrice: 'bottom_get_all_price'
+      foodPrice: 'bottom_get_all_price',
+      showBottom: 'bottom_get_show_bottom',
+      bottomType: 'bottom_get_bottom_type'
     })
   },
   data () {
@@ -97,15 +114,19 @@ export default {
       value: 0,
       showBadge: false,
       foodsTemp: []
-
     }
   },
   methods: {
     showBasketDetail () {
       this.showDetail = !this.showDetail
+      if (this.showDetail) {
+        this._initBasket()
+      }
     },
     submitOrder () {
-      console.log(22)
+      this.$router.push({
+        path: 'order'
+      })
     },
     clearFood () {
       this.$store.dispatch('bottom_clear_basket')
@@ -117,7 +138,11 @@ export default {
       let fTemp = []
       this.basket.map(item => {
         let temp = JSON.parse(JSON.stringify(item))
-        fTemp.push(temp)
+        if (temp.num > 0) {
+          fTemp.push(temp)
+        } else {
+          this.$store.dispatch('bottom_change_basket_item', fTemp)
+        }
       })
       this.foodsTemp = []
       this.$nextTick(() => {
@@ -129,6 +154,16 @@ export default {
 </script>
 <style scoped>
   .com-bottom {
+    position: absolute;
+    z-index: 999;
+    background: rgba(0, 0, 0, .8);
+    height: 46px;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    color: #ffffff;
+  }
+  .bottom_submit {
     position: absolute;
     z-index: 999;
     background: rgba(0, 0, 0, .8);
@@ -192,6 +227,14 @@ export default {
     cursor: pointer;
   }
 
+  .submit-button-order {
+    width: 100px;
+    height: 46px;
+    line-height: 46px;
+    text-align: center;
+    background:#bd0b05;
+    cursor: pointer;
+  }
 
   .food-detail-content {
     padding-bottom: 15px;
@@ -218,6 +261,10 @@ export default {
     top: 0;
     right: 0;
     position: absolute;
+  }
+
+  .margin-left-15 {
+    margin-left: 15px;
   }
 </style>
 <style>

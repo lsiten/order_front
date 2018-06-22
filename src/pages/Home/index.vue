@@ -50,7 +50,7 @@
   </div>
 </template>
 <script>
-import { Flexbox, FlexboxItem, Swiper, Scroller, Group, Cell } from 'vux'
+import { Flexbox, FlexboxItem, Swiper, Scroller, Group, Cell, querystring } from 'vux'
 import fooditem from './fooditem'
 import { mapGetters } from 'vuex'
 export default {
@@ -70,6 +70,13 @@ export default {
     })
   },
   created () {
+    let params = querystring.parse(window.location.search)
+    if (!params.id) {
+      this.$router.push({path: '/error'})
+      return ''
+    }
+    this.$store.dispatch('header_set_show_back', false)
+    this.$store.dispatch('bottom_set_show', true)
     // 获取banner
     this.$store.dispatch('home_get_banners', {})
     this.getCateData().then(() => {
@@ -83,7 +90,6 @@ export default {
       deep: true,
       handler: function () {
         let basketLength = this.basket.length
-        let deleteBasketLength = this.deleteBasket.length
         for (let i = 0; i < basketLength; i++) {
           let basketItem = this.basket[i]
           let refId = 'food_' + basketItem.id + '_' + basketItem.cate_id
@@ -92,7 +98,12 @@ export default {
             refDom[0].foodNumber = basketItem.num
           }
         }
-
+      }
+    },
+    deleteBasket: {
+      deep: true,
+      handler: function () {
+        let deleteBasketLength = this.deleteBasket.length
         for (let i = 0; i < deleteBasketLength; i++) {
           let basketItem = this.deleteBasket[i]
           let refId = 'food_' + basketItem.id + '_' + basketItem.cate_id
@@ -222,6 +233,21 @@ export default {
   },
   mounted () {
     this.foodScroller = this.$refs.rightFood
+    let tempDelete = this.deleteBasket.slice(0)
+    let deleteBasketLength = this.deleteBasket.length
+    if (deleteBasketLength > 0) {
+      for (let i = 0; i < deleteBasketLength; i++) {
+        let basketItem = tempDelete[i]
+        let refId = 'food_' + basketItem.id + '_' + basketItem.cate_id
+        let refDom = this.$refs[refId]
+        if (refDom && refDom.length > 0) {
+          this.$nextTick(() => {
+            refDom[0].foodNumber = 0
+          })
+          this.$store.dispatch('bottom_delete_basket_item', basketItem)
+        }
+      }
+    }
   }
 }
 </script>
