@@ -35,7 +35,7 @@
           </div>
           <div class="food-detail-header-food-item">
             <group>
-              <x-number :min='0' v-for="(item, index) in foodsTemp" @input="change(item)" v-bind:key="index" :title="item.name" v-model="item.num"></x-number>
+              <x-number :min='0' v-for="(item, index) in foodsTemp" @on-change="change(item)" v-bind:key="index" :title="item.name" v-model="item.num"></x-number>
           </group>
           </div>
         </div>
@@ -69,12 +69,16 @@ export default {
     totalNum () {
       if (parseInt(this.totalNum) > 0) {
         this.showBadge = true
+      } else {
+        this.showBadge = false
       }
     }
   },
   created () {
     if (parseInt(this.totalNum) > 0) {
       this.showBadge = true
+    } else {
+      this.showBadge = false
     }
     this._initBasket()
   },
@@ -107,17 +111,12 @@ export default {
       this.$store.dispatch('bottom_clear_basket')
     },
     change (food) {
-      console.log(food)
+      this.$store.dispatch('bottom_change_basket_item', food)
     },
     _initBasket () {
       let fTemp = []
       this.basket.map(item => {
-        let temp = {
-          id: item.id,
-          name: item.name,
-          num: item.num
-        }
-
+        let temp = JSON.parse(JSON.stringify(item))
         fTemp.push(temp)
       })
       this.foodsTemp = []

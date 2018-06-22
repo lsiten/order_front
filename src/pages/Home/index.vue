@@ -36,7 +36,7 @@
               >
                 <div>
                   <group :ref = "'cate_' + item1.id" :title="item1.name" class="white-background" v-for="(item1, index1) in foodData" v-bind:key="index1">
-                    <fooditem v-show="item1.food.length > 0" v-for="(item2, index2) in item1.food" v-bind:key="index2" :food="item2"></fooditem>
+                    <fooditem :ref="'food_' + item2.id + '_' + item2.cate_id" v-show="item1.food.length > 0" v-for="(item2, index2) in item1.food" v-bind:key="index2" :food="item2"></fooditem>
                     <div v-show="!item1.food.length" class="no-data-tips">
                       暂无数据
                     </div>
@@ -65,7 +65,8 @@ export default {
       food_page_size: 'home_get_food_page_size',
       foodData: 'home_get_foods',
       foodHasmore: 'home_get_foods_hasmore',
-      basket: 'bottom_get_shopping_basket'
+      basket: 'bottom_get_shopping_basket',
+      deleteBasket: 'bottom_get_delete_basket'
     })
   },
   created () {
@@ -81,7 +82,26 @@ export default {
     basket: {
       deep: true,
       handler: function () {
-        console.log(this.basket)
+        let basketLength = this.basket.length
+        let deleteBasketLength = this.deleteBasket.length
+        for (let i = 0; i < basketLength; i++) {
+          let basketItem = this.basket[i]
+          let refId = 'food_' + basketItem.id + '_' + basketItem.cate_id
+          let refDom = this.$refs[refId]
+          if (refDom && refDom.length > 0) {
+            refDom[0].foodNumber = basketItem.num
+          }
+        }
+
+        for (let i = 0; i < deleteBasketLength; i++) {
+          let basketItem = this.deleteBasket[i]
+          let refId = 'food_' + basketItem.id + '_' + basketItem.cate_id
+          let refDom = this.$refs[refId]
+          if (refDom && refDom.length > 0) {
+            refDom[0].foodNumber = 0
+            this.$store.dispatch('bottom_delete_basket_item', basketItem)
+          }
+        }
       }
     }
   },

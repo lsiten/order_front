@@ -6,6 +6,7 @@
       </flexbox-item>
       <flexbox-item>
         <div class="flex-title">{{food.name}}</div>
+        <div class="flex-price">￥{{food.price}}元</div>
         <div class="flex-desc">{{food.desc}}</div>
         <div class="flex-number">
           <x-number v-model="foodNumber" button-style="round" :min="0" :max="100"></x-number>
@@ -28,6 +29,11 @@ export default {
       foodNumber: 0
     }
   },
+  methods: {
+    changeFoodnumber (num) {
+      this.foodNumber = num
+    }
+  },
   watch: {
     foodNumber (value) {
       this.food.num = value
@@ -48,6 +54,7 @@ export default {
 <style scoped>
  .home-foodItem {
    margin-top: 5px;
+   border-bottom: #e3dede 1px solid;
  }
  .flex-title {
    font-weight: 400;
@@ -68,6 +75,18 @@ export default {
    display: -webkit-box;
    -webkit-box-orient: vertical;
    -webkit-line-clamp: 2;
+  }
+  .flex-price {
+    color: #ca0d0d;
+    font-size: 13px;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+    margin: 5px 0px;
   }
   .ximg-thumb {
     width: 100px;
