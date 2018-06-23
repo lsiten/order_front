@@ -80,6 +80,14 @@ export default {
             break
         }
       }
+      ws.onclose = () => {
+        let params = {
+          client_id: data.client_id,
+          deskid: this.deskid
+        }
+        this.$store.dispatch('ws_offline_client', params)
+        ws.close(); //关闭TCP连接
+      }
     }
   },
   computed: {

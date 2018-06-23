@@ -6,5 +6,8 @@ export default {
   },
   wsAddFood (params) {
     return fetch('/message/addFood', params)
+  },
+  wsOffLineClient (params) {
+    return fetch('/message/offline', params)
   }
 }
