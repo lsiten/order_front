@@ -11,6 +11,7 @@
 import lHeader from '../components/com/header'
 import lbottom from '../components/com/bottom'
 import { ViewBox, querystring } from 'vux'
+import { mapGetters } from 'vuex'
 export default {
   name: 'home',
   components: {
@@ -34,7 +35,6 @@ export default {
       )
       return ''
     })
-    
   },
   destroyed () {
     this.$store.dispatch('com_clear_desk_info')
@@ -63,8 +63,29 @@ export default {
       })
     },
     _initWebsock () {
-      console.log(1)
+      let wsUrl = 'ws://xxn.lsiten.cn:2346'
+      let ws = new window.WebSocket(wsUrl)
+      ws.onmessage = (e) => {
+        let data = JSON.parse(e.data)
+        switch (data.type) {
+          case 'ping':
+            console.log('ping')
+            break
+          case 'init':
+            let params = {
+              client_id: data.client_id,
+              deskid: this.deskid
+            }
+            this.$store.dispatch('ws_bind_client', params)
+            break
+        }
+      }
     }
+  },
+  computed: {
+    ...mapGetters({
+      deskid: 'com_get_desk_id'
+    })
   }
 }
 </script>

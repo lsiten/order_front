@@ -1,3 +1,4 @@
+import api from '../../fetch/modules/ws'
 import * as types from '../types'
 const state = {
   shoppingBasket: [],
@@ -98,8 +99,11 @@ const mutations = {
 }
 
 const actions = {
-  bottom_add_basket ({commit}, food) {
-    commit(types.BOTTOM_ADD_FOODS_BASKET, food)
+  bottom_add_basket ({commit}, data) {
+    let param = JSON.parse(JSON.stringify(data))
+    param.food = JSON.stringify(param.food)
+    api.wsAddFood(param)
+    commit(types.BOTTOM_ADD_FOODS_BASKET, data.food)
   },
   bottom_update_basket_total ({commit}) {
     commit(types.BOTTOM_UPDATE_FOODS_BASKET)

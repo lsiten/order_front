@@ -17,6 +17,7 @@
 </template>
 <script>
 import { Flexbox, FlexboxItem, XImg, XNumber } from 'vux'
+import { mapGetters } from 'vuex'
 export default {
   name: 'home-fooditem',
   props: {
@@ -34,11 +35,21 @@ export default {
       this.foodNumber = num
     }
   },
+  computed: {
+    ...mapGetters({
+      deskid: 'com_get_desk_id',
+      client_id: 'ws_get_client_id',
+    })
+  },
   watch: {
     foodNumber (value) {
       this.food.num = value
       if (value > 0) {
-        this.$store.dispatch('bottom_add_basket', this.food)
+        this.$store.dispatch('bottom_add_basket', {
+          food: this.food,
+          deskid: this.deskid,
+          client_id: this.client_id
+        })
       } else {
         this.$store.dispatch('bottom_update_basket_total')
       }
