@@ -39,7 +39,7 @@ axios.interceptors.response.use((res) => {
     return Promise.reject(res)
   } else if (res.code === '02') {
     router.push({
-      name: 'login',
+      name: 'error',
       query: { redirect: router.currentRoute.fullPath }
     })
   }
@@ -51,7 +51,7 @@ axios.interceptors.response.use((res) => {
       case 404:
         // 后台返回的404，后台也可定义为其他 清除token信息并跳转到登录页面
         router.push({
-          name: 'login',
+          name: 'error',
           query: { redirect: router.currentRoute.fullPath }
         })
     }

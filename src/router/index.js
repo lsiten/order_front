@@ -28,6 +28,7 @@ export default new Router({
     },
     {
       path: '/error',
+      name: 'error',
       component: resolve => require(['../pages/error.vue'], resolve),
       meta: {title: '错误页面'}
     }

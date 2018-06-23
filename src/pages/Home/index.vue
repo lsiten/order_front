@@ -66,7 +66,8 @@ export default {
       foodData: 'home_get_foods',
       foodHasmore: 'home_get_foods_hasmore',
       basket: 'bottom_get_shopping_basket',
-      deleteBasket: 'bottom_get_delete_basket'
+      deleteBasket: 'bottom_get_delete_basket',
+      deskid: 'com_get_desk_id'
     })
   },
   created () {
@@ -75,14 +76,23 @@ export default {
       this.$router.push({path: '/error'})
       return ''
     }
-    this.$store.dispatch('header_set_show_back', false)
-    this.$store.dispatch('bottom_set_show', true)
-    // 获取banner
-    this.$store.dispatch('home_get_banners', {})
-    this.getCateData().then(() => {
-      let cateData = this.cateData
-      let currentCate = cateData[this.cateValue]
-      this.getFoods(currentCate)
+    this.$store.dispatch('com_check_desk_id', params.id).then(data => {
+      this.$store.dispatch('header_set_show_back', false)
+      this.$store.dispatch('bottom_set_show', true)
+      // 获取banner
+      this.$store.dispatch('home_get_banners', {})
+      this.getCateData().then(() => {
+        let cateData = this.cateData
+        let currentCate = cateData[this.cateValue]
+        this.getFoods(currentCate)
+      })
+    }).catch(msg => {
+      this.$router.push({path: '/error',
+        query: {
+          errorMsg: msg
+        }}
+      )
+      return ''
     })
   },
   watch: {

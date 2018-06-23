@@ -24,23 +24,46 @@ export default {
       this.$router.push({path: '/error'})
       return ''
     }
-    let wx = this._wx
-    const permissions = JSON.stringify(['chooseImage'])
-    const url = document.location.href
-    this.$store.dispatch('getWxConfig', {
-      url: encodeURIComponent(this.Trim(url.split('#')[0])),
-      jsApiList: permissions
-    }).then(data => {
-      console.log(data)
-      wx.config(data)
+    this.$store.dispatch('com_check_desk_id', params.id).then(data => {
+      this._initData()
+    }).catch(msg => {
+      this.$router.push({path: '/error',
+        query: {
+          errorMsg: msg
+        }}
+      )
+      return ''
     })
-    wx.ready(() => {
-      console.log(111)
-    })
+    
+  },
+  destroyed () {
+    this.$store.dispatch('com_clear_desk_info')
   },
   methods: {
     Trim (str) {
       return str.replace(/(^\/*)|(\/*$)/g, '')
+    },
+    _initData () {
+      this._initWx()
+      this._initWebsock()
+    },
+    _initWx () {
+      let wx = this._wx
+      const permissions = JSON.stringify(['chooseImage'])
+      const url = document.location.href
+      this.$store.dispatch('getWxConfig', {
+        url: encodeURIComponent(this.Trim(url.split('#')[0])),
+        jsApiList: permissions
+      }).then(data => {
+        console.log(data)
+        wx.config(data)
+      })
+      wx.ready(() => {
+        console.log(111)
+      })
+    },
+    _initWebsock () {
+      console.log(1)
     }
   }
 }

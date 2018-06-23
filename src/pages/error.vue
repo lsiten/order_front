@@ -15,6 +15,8 @@ export default {
   },
   created () {
     this.$store.dispatch('header_set_show_center', false)
+    let params = this.$route.query
+    params.errorMsg && (this.title = params.errorMsg)
   },
   data () {
     return {
