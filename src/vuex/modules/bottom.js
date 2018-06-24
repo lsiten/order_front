@@ -151,8 +151,13 @@ const actions = {
       api.wsSubmitOrder(param).then(data => {
         let code = parseInt(data.code)
         if (code === 1) {
+          commit(types.BOTTOM_CLEAR_FOODS_BASKET)
+          commit(types.BOTTOM_UPDATE_FOODS_BASKET)
           resolve(data.data)
         } else {
+          if (code === 60004) {
+            reject(code)
+          }
           reject(data.msg)
         }
       })

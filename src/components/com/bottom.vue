@@ -135,8 +135,8 @@ export default {
     },
     // 确认下单
     submitOrderCommit () {
-      let deskinfo =  {}
-      let _this = this  
+      let deskinfo = {}
+      let _this = this
       if (this.deskinfo) {
         deskinfo = JSON.parse(this.deskinfo)
       }
@@ -166,10 +166,18 @@ export default {
           }
         })
       }).catch(err => {
-        this.$vux.toast.show({
-          text: err,
-          type: 'warn'
-        })
+        if (err === 60004) {
+          this.$vux.toast.show({
+            text: '该桌有未支付订单，请联系管理员！',
+            type: 'warn'
+          })
+          _this.$router.push({name: 'orderlist'})
+        } else {
+          this.$vux.toast.show({
+            text: err,
+            type: 'warn'
+          })
+        }
       })
     },
     clearFood () {

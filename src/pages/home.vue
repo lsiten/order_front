@@ -89,6 +89,9 @@ export default {
               this.$store.dispatch('bottom_update_basket_total')
             }
             break
+          case 'addorder':
+            console.log(data)
+            break
         }
       }
       ws.onclose = () => {
