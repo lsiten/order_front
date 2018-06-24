@@ -3,16 +3,20 @@
     <group title="已购商品">
       <x-number :min='0' v-for="(item, index) in foodsTemp" @on-change="change(item)" v-bind:key="index" :title="item.name" v-model="item.num"></x-number>
     </group>
+    <group>
+      <x-textarea title="备注" placeholder='请输入订单备注' v-model="notes"></x-textarea>
+    </group>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { XNumber, Group } from 'vux'
+import { XNumber, Group, XTextarea } from 'vux'
 export default {
   name: 'order-index',
   data () {
     return {
-      foodsTemp: []
+      foodsTemp: [],
+      notes: ''
     }
   },
   computed: {
@@ -22,7 +26,8 @@ export default {
   },
   components: {
     XNumber,
-    Group
+    Group,
+    XTextarea
   },
   created () {
     let fTemp = this._initBasket()
@@ -41,6 +46,11 @@ export default {
       deep: true,
       handler: function () {
         this._initBasket()
+      }
+    },
+    notes () {
+      if (this.notes.length > 0) {
+        this.$store.dispatch('bottom_update_notes', this.notes)
       }
     }
   },

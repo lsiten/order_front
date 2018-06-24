@@ -101,6 +101,7 @@ export default {
     ...mapGetters({
       basket: 'bottom_get_shopping_basket',
       deskid: 'com_get_desk_id',
+      notes: 'bottom_get_notes',
       client_id: 'ws_get_client_id',
       totalNum: 'bottom_get_total',
       foodPrice: 'bottom_get_all_price',
@@ -137,7 +138,8 @@ export default {
         total: this.foodPrice,
         foods: JSON.stringify(this.basket),
         deskid: this.deskid,
-        client_id: this.client_id
+        client_id: this.client_id,
+        notes: this.notes
       }
       let _this = this
       this.$store.dispatch('bottom_submit_order', data).then(data => {

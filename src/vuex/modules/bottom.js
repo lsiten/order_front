@@ -4,6 +4,7 @@ const state = {
   shoppingBasket: [],
   deleteBasket: [],
   total: 0,
+  notes: '',
   AllPrice: 0,
   showBottom: true,
   bottomType: ''
@@ -13,6 +14,7 @@ const getters = {
   bottom_get_delete_basket: state => state.deleteBasket,
   bottom_get_total: state => state.total,
   bottom_get_all_price: state => state.AllPrice,
+  bottom_get_notes: state => state.notes,
   bottom_get_show_bottom: state => state.showBottom,
   bottom_get_bottom_type: state => state.bottomType
 }
@@ -95,6 +97,9 @@ const mutations = {
     }
     state.total = sum
     state.AllPrice = AllPrice
+  },
+  [types.BOTTOM_UPDATE_ORDER_NOTES] (state, notes) {
+    state.notes = notes
   }
 }
 
@@ -152,6 +157,10 @@ const actions = {
         }
       })
     })
+  },
+  // 更新订单备注
+  bottom_update_notes ({commit}, notes) {
+    commit(types.BOTTOM_UPDATE_ORDER_NOTES)
   }
 }
 
