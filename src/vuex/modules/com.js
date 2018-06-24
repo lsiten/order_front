@@ -5,7 +5,8 @@ const state = {
   deskId: localStorage.getItem('lsiten_desk_id') || 0
 }
 const getters = {
-  com_get_desk_id: state => state.deskId
+  com_get_desk_id: state => state.deskId,
+  com_get_desk_info: state => localStorage.getItem('lsiten_desk_info')
 }
 
 const mutations = {

@@ -101,6 +101,7 @@ export default {
     ...mapGetters({
       basket: 'bottom_get_shopping_basket',
       deskid: 'com_get_desk_id',
+      deskinfo: 'com_get_desk_info',
       notes: 'bottom_get_notes',
       client_id: 'ws_get_client_id',
       totalNum: 'bottom_get_total',
@@ -134,20 +135,34 @@ export default {
     },
     // 确认下单
     submitOrderCommit () {
+      let deskinfo =  {}
+      let _this = this  
+      if (this.deskinfo) {
+        deskinfo = JSON.parse(this.deskinfo)
+      }
+      if (!deskinfo.id) {
+        this.$vux.toast.show({
+          text: '桌信息有误，请刷新页面或联系管理员！',
+          type: 'warn',
+          onHide () {
+            _this.$router.push({name: 'error'})
+          }
+        })
+      }
       let data = {
         total: this.foodPrice,
         foods: JSON.stringify(this.basket),
         deskid: this.deskid,
+        desknum: deskinfo.num,
         client_id: this.client_id,
         notes: this.notes
       }
-      let _this = this
       this.$store.dispatch('bottom_submit_order', data).then(data => {
         this.$vux.toast.show({
           text: '订单提交成功！',
           type: 'success',
           onHide () {
-            _this.$router.push({name: '/orderlist'})
+            _this.$router.push({name: 'orderlist'})
           }
         })
       }).catch(err => {
