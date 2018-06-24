@@ -100,9 +100,12 @@ const mutations = {
 
 const actions = {
   bottom_add_basket ({commit}, data) {
-    let param = JSON.parse(JSON.stringify(data))
-    param.food = JSON.stringify(param.food)
-    api.wsAddFood(param)
+    if (data.send) {
+      let param = JSON.parse(JSON.stringify(data))
+      param.food = JSON.stringify(param.food)
+      api.wsAddFood(param)
+      delete data.send
+    }
     commit(types.BOTTOM_ADD_FOODS_BASKET, data.food)
   },
   bottom_update_basket_total ({commit}) {
@@ -136,6 +139,18 @@ const actions = {
     commit(types.BOTTOM_SET_BOTTOM_TYPE, type)
     return new Promise((resolve, reject) => {
       resolve()
+    })
+  },
+  bottom_submit_order ({commit}, param) {
+    return new Promise((resolve, reject) => {
+      api.wsSubmitOrder(param).then(data => {
+        let code = parseInt(data.code)
+        if (code === 1) {
+          resolve(data.data)
+        } else {
+          reject(data.msg)
+        }
+      })
     })
   }
 }

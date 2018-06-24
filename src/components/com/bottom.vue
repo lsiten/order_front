@@ -50,7 +50,7 @@
             ￥<span>{{foodPrice}}</span>
           </div>
           <div class="right-content">
-            <div class="submit-button-order" @click="submitOrder">
+            <div class="submit-button-order" @click="submitOrderCommit">
               下单
             </div>
           </div>
@@ -100,6 +100,8 @@ export default {
   computed: {
     ...mapGetters({
       basket: 'bottom_get_shopping_basket',
+      deskid: 'com_get_desk_id',
+      client_id: 'ws_get_client_id',
       totalNum: 'bottom_get_total',
       foodPrice: 'bottom_get_all_price',
       showBottom: 'bottom_get_show_bottom',
@@ -123,9 +125,34 @@ export default {
         this._initBasket()
       }
     },
+    // 跳转下单页面
     submitOrder () {
       this.$router.push({
         path: 'order'
+      })
+    },
+    // 确认下单
+    submitOrderCommit () {
+      let data = {
+        total: this.foodPrice,
+        foods: JSON.stringify(this.basket),
+        deskid: this.deskid,
+        client_id: this.client_id
+      }
+      let _this = this
+      this.$store.dispatch('bottom_submit_order', data).then(data => {
+        this.$vux.toast.show({
+          text: '订单提交成功！',
+          type: 'success',
+          onHide () {
+            _this.$router.push({name: '/orderlist'})
+          }
+        })
+      }).catch(err => {
+        this.$vux.toast.show({
+          text: err,
+          type: 'warn'
+        })
       })
     },
     clearFood () {

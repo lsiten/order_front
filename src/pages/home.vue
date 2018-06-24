@@ -69,7 +69,7 @@ export default {
         let data = JSON.parse(e.data)
         switch (data.type) {
           case 'ping':
-            console.log('ping')
+            ws.send('{"type":"ping"}')
             break
           case 'init':
             let params = {
@@ -78,15 +78,26 @@ export default {
             }
             this.$store.dispatch('ws_bind_client', params)
             break
+          case 'addfood':
+            let food = JSON.parse(data.data)
+            if (food.num > 0) {
+              this.$store.dispatch('bottom_add_basket', {
+                food: food,
+                send: false
+              })
+            } else {
+              this.$store.dispatch('bottom_update_basket_total')
+            }
+            break
         }
       }
       ws.onclose = () => {
         let params = {
-          client_id: data.client_id,
+          client_id: this.client_id,
           deskid: this.deskid
         }
         this.$store.dispatch('ws_offline_client', params)
-        ws.close(); //关闭TCP连接
+        ws.close() // 关闭TCP连接
       }
     }
   },

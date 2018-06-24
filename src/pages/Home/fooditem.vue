@@ -38,7 +38,7 @@ export default {
   computed: {
     ...mapGetters({
       deskid: 'com_get_desk_id',
-      client_id: 'ws_get_client_id',
+      client_id: 'ws_get_client_id'
     })
   },
   watch: {
@@ -48,7 +48,8 @@ export default {
         this.$store.dispatch('bottom_add_basket', {
           food: this.food,
           deskid: this.deskid,
-          client_id: this.client_id
+          client_id: this.client_id,
+          send: true
         })
       } else {
         this.$store.dispatch('bottom_update_basket_total')

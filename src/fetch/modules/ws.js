@@ -9,5 +9,8 @@ export default {
   },
   wsOffLineClient (params) {
     return fetch('/message/offline', params)
+  },
+  wsSubmitOrder (params) {
+    return fetch('/message/addOrder', params)
   }
 }
