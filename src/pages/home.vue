@@ -80,14 +80,10 @@ export default {
             break
           case 'addfood':
             let food = JSON.parse(data.data)
-            if (food.num > 0) {
-              this.$store.dispatch('bottom_add_basket', {
-                food: food,
-                send: false
-              })
-            } else {
-              this.$store.dispatch('bottom_update_basket_total')
-            }
+            this.$store.dispatch('bottom_add_basket', {
+              food: food,
+              send: false
+            })
             break
           case 'addorder':
             console.log(data)

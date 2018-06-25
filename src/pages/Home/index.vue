@@ -67,6 +67,7 @@ export default {
       foodHasmore: 'home_get_foods_hasmore',
       basket: 'bottom_get_shopping_basket',
       deleteBasket: 'bottom_get_delete_basket',
+      isFirstLoading: 'com_get_first_loading',
       deskid: 'com_get_desk_id'
     })
   },
@@ -84,7 +85,18 @@ export default {
       this.getCateData().then(() => {
         let cateData = this.cateData
         let currentCate = cateData[this.cateValue]
-        this.getFoods(currentCate)
+        this.getFoods(currentCate).then(data => {
+          if (this.isFirstLoading) {
+            let basketParam = {
+              deskid: this.deskid
+            }
+            this.$store.dispatch('bottom_init_basket', true)
+            this.$store.dispatch('bottom_get_basket', basketParam).then(data => {
+              this.$store.dispatch('bottom_init_basket', false)
+              this.$store.dispatch('com_set_first_loading', false)
+            })
+          }
+        })
       })
     }).catch(msg => {
       this.$router.push({path: '/error',

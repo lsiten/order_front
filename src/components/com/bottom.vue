@@ -181,10 +181,17 @@ export default {
       })
     },
     clearFood () {
-      this.$store.dispatch('bottom_clear_basket')
+      this.$store.dispatch('bottom_clear_basket', {
+        deskid: this.deskid
+      })
     },
     change (food) {
-      this.$store.dispatch('bottom_change_basket_item', food)
+      this.$store.dispatch('bottom_change_basket_item', {
+        food: food,
+        deskid: this.deskid,
+        client_id: this.client_id,
+        send: true
+      })
     },
     _initBasket () {
       let fTemp = []
@@ -193,7 +200,12 @@ export default {
         if (temp.num > 0) {
           fTemp.push(temp)
         } else {
-          this.$store.dispatch('bottom_change_basket_item', fTemp)
+          this.$store.dispatch('bottom_change_basket_item', {
+            food: temp,
+            deskid: this.deskid,
+            client_id: this.client_id,
+            send: true
+          })
         }
       })
       this.foodsTemp = []

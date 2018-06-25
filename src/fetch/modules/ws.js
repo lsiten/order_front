@@ -12,5 +12,13 @@ export default {
   },
   wsSubmitOrder (params) {
     return fetch('/message/addOrder', params)
+  },
+  // 获取购物车缓存
+  wsGetBasketData (params) {
+    return fetch('/message/getBasketOrder', params)
+  },
+  // 获取购物车缓存
+  wsclearBasketData (params) {
+    return fetch('/message/clearBasket', params)
   }
 }

@@ -38,11 +38,15 @@ export default {
   computed: {
     ...mapGetters({
       deskid: 'com_get_desk_id',
-      client_id: 'ws_get_client_id'
+      client_id: 'ws_get_client_id',
+      isInit: 'bottom_get_isinit'
     })
   },
   watch: {
     foodNumber (value) {
+      if (this.isInit) {
+        return false
+      }
       this.food.num = value
       if (value > 0) {
         this.$store.dispatch('bottom_add_basket', {
@@ -52,6 +56,11 @@ export default {
           send: true
         })
       } else {
+        this.$store.dispatch('ws_remove_food', {
+          food: this.food,
+          deskid: this.deskid,
+          client_id: this.client_id
+        })
         this.$store.dispatch('bottom_update_basket_total')
       }
     }

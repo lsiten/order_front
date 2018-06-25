@@ -16,6 +16,7 @@ const mutations = {
 }
 
 const actions = {
+  // 绑定客户端
   ws_bind_client ({commit}, params) {
     return new Promise((resolve, reject) => {
       api.wsInitClient(params).then(data => {
@@ -26,6 +27,7 @@ const actions = {
       })
     })
   },
+  // 下线
   ws_offline_client ({commit}, params) {
     return new Promise((resolve, reject) => {
       api.wsOffLineClient(params).then(data => {
@@ -33,6 +35,23 @@ const actions = {
         commit(types.WS_CLEAR_CLIENT_ID)
       }).catch(err => {
         reject(err.msg)
+      })
+    })
+  },
+  // 删除food
+  ws_remove_food ({commit}, params) {
+    return new Promise((resolve, reject) => {
+      let data = JSON.parse(JSON.stringify(params))
+      data.food = JSON.stringify(data.food)
+      api.wsAddFood(data).then(data => {
+        let code = parseInt(data.code)
+        if (code === 1) {
+          resolve(data)
+        } else {
+          reject(data.msg)
+        }
+      }).catch(err => {
+        reject(err)
       })
     })
   }

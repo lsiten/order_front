@@ -2,10 +2,12 @@ import api from '../../fetch/modules/com'
 import * as types from '../types'
 const state = {
   main: 0,
-  deskId: localStorage.getItem('lsiten_desk_id') || 0
+  deskId: localStorage.getItem('lsiten_desk_id') || 0,
+  firstLoading: true
 }
 const getters = {
   com_get_desk_id: state => state.deskId,
+  com_get_first_loading: state => state.firstLoading,
   com_get_desk_info: state => localStorage.getItem('lsiten_desk_info')
 }
 
@@ -26,6 +28,9 @@ const mutations = {
   [types.COM_CLEAR_DESK] (state) {
     localStorage.removeItem('lsiten_desk_info')
     localStorage.removeItem('lsiten_desk_id')
+  },
+  [types.COM_SET_FIRST_LOADING] (state, status) {
+    state.firstLoading = status
   }
 }
 
@@ -59,6 +64,9 @@ const actions = {
   },
   com_clear_desk_info ({ commit }) {
     commit(types.COM_CLEAR_DESK)
+  },
+  com_set_first_loading ({ commit }, status) {
+    commit(types.COM_SET_FIRST_LOADING, status)
   }
 }
 

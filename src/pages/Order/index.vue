@@ -21,7 +21,9 @@ export default {
   },
   computed: {
     ...mapGetters({
-      basket: 'bottom_get_shopping_basket'
+      basket: 'bottom_get_shopping_basket',
+      deskid: 'com_get_desk_id',
+      client_id: 'ws_get_client_id'
     })
   },
   components: {
@@ -62,7 +64,12 @@ export default {
         if (temp.num > 0) {
           fTemp.push(temp)
         } else {
-          this.$store.dispatch('bottom_change_basket_item', fTemp)
+          this.$store.dispatch('bottom_change_basket_item', {
+            food: temp,
+            deskid: this.deskid,
+            client_id: this.client_id,
+            send: true
+          })
         }
       })
       this.foodsTemp = []
@@ -72,7 +79,12 @@ export default {
       return fTemp
     },
     change (food) {
-      this.$store.dispatch('bottom_change_basket_item', food)
+      this.$store.dispatch('bottom_change_basket_item', {
+        food: food,
+        deskid: this.deskid,
+        client_id: this.client_id,
+        send: true
+      })
     }
   }
 }
