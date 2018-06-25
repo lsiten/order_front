@@ -172,6 +172,7 @@ export default {
           cate: cateitem
         }).then(data => {
           this.isLoading = false
+          this._updateFoodItem()
           resolve()
         }).catch((err) => {
           reject(err)
@@ -237,7 +238,14 @@ export default {
     // 获取banner
     this.$store.dispatch('home_get_banners', {})
     if (this.basketChange) {
-      this._updateFoodItem()
+      let basketParam = {
+        deskid: this.deskid
+      }
+      this.$store.dispatch('bottom_init_basket', true)
+      this.$store.dispatch('bottom_get_basket', basketParam).then(data => {
+        this._updateFoodItem()
+        this.$store.dispatch('bottom_init_basket', false)
+      })
     }
     this.getCateData().then(() => {
       let cateData = this.cateData
@@ -248,7 +256,6 @@ export default {
         }
         this.$store.dispatch('bottom_init_basket', true)
         this.$store.dispatch('bottom_get_basket', basketParam).then(data => {
-          console.log(2)
           this._updateFoodItem()
           this.$store.dispatch('bottom_init_basket', false)
         })
