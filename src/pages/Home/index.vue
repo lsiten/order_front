@@ -66,8 +66,9 @@ export default {
       foodData: 'home_get_foods',
       foodHasmore: 'home_get_foods_hasmore',
       basket: 'bottom_get_shopping_basket',
-      deleteBasket: 'bottom_get_delete_basket',
+      basketChange: 'bottom_get_basket_change',
       isFirstLoading: 'com_get_first_loading',
+      deleteFood: 'bottom_get_delete_food',
       deskid: 'com_get_desk_id'
     })
   },
@@ -80,24 +81,6 @@ export default {
     this.$store.dispatch('com_check_desk_id', params.id).then(data => {
       this.$store.dispatch('header_set_show_back', false)
       this.$store.dispatch('bottom_set_show', true)
-      // 获取banner
-      this.$store.dispatch('home_get_banners', {})
-      this.getCateData().then(() => {
-        let cateData = this.cateData
-        let currentCate = cateData[this.cateValue]
-        this.getFoods(currentCate).then(data => {
-          if (this.isFirstLoading) {
-            let basketParam = {
-              deskid: this.deskid
-            }
-            this.$store.dispatch('bottom_init_basket', true)
-            this.$store.dispatch('bottom_get_basket', basketParam).then(data => {
-              this.$store.dispatch('bottom_init_basket', false)
-              this.$store.dispatch('com_set_first_loading', false)
-            })
-          }
-        })
-      })
     }).catch(msg => {
       this.$router.push({path: '/error',
         query: {
@@ -108,34 +91,8 @@ export default {
     })
   },
   watch: {
-    basket: {
-      deep: true,
-      handler: function () {
-        let basketLength = this.basket.length
-        for (let i = 0; i < basketLength; i++) {
-          let basketItem = this.basket[i]
-          let refId = 'food_' + basketItem.id + '_' + basketItem.cate_id
-          let refDom = this.$refs[refId]
-          if (refDom && refDom.length > 0) {
-            refDom[0].foodNumber = basketItem.num
-          }
-        }
-      }
-    },
-    deleteBasket: {
-      deep: true,
-      handler: function () {
-        let deleteBasketLength = this.deleteBasket.length
-        for (let i = 0; i < deleteBasketLength; i++) {
-          let basketItem = this.deleteBasket[i]
-          let refId = 'food_' + basketItem.id + '_' + basketItem.cate_id
-          let refDom = this.$refs[refId]
-          if (refDom && refDom.length > 0) {
-            refDom[0].foodNumber = 0
-            this.$store.dispatch('bottom_delete_basket_item', basketItem)
-          }
-        }
-      }
+    basketChange (val) {
+      val && this._updateFoodItem()
     }
   },
   data () {
@@ -145,7 +102,8 @@ export default {
       current_cate: '',
       isLoading: false,
       catePage: {},
-      foodScroller: null
+      foodScroller: null,
+      isChangeBasket: false
     }
   },
   components: {
@@ -251,25 +209,51 @@ export default {
     },
     getFoodDataMore () {
       this.getFoodDebounce()
+    },
+    _updateFoodItem () {
+      let deleteFood = this.deleteFood
+      let basketLength = this.basket.length
+      for (let i = 0; i < deleteFood.length; i++) {
+        let refId = 'food_' + deleteFood[i]
+        let refDom = this.$refs[refId]
+        if (refDom && refDom.length > 0) {
+          refDom[0].changeFoodnumber(0)
+        }
+      }
+      for (let i = 0; i < basketLength; i++) {
+        let basketItem = this.basket[i]
+        let refId = 'food_' + basketItem.id + '_' + basketItem.cate_id
+        let refDom = this.$refs[refId]
+        if (refDom && refDom.length > 0) {
+          refDom[0].changeFoodnumber(basketItem.num)
+        }
+      }
+      this.$store.dispatch('bottom_clear_delete_basket')
+      this.$store.dispatch('bottom_set_basket_change', false)
     }
   },
   mounted () {
     this.foodScroller = this.$refs.rightFood
-    let tempDelete = this.deleteBasket.slice(0)
-    let deleteBasketLength = this.deleteBasket.length
-    if (deleteBasketLength > 0) {
-      for (let i = 0; i < deleteBasketLength; i++) {
-        let basketItem = tempDelete[i]
-        let refId = 'food_' + basketItem.id + '_' + basketItem.cate_id
-        let refDom = this.$refs[refId]
-        if (refDom && refDom.length > 0) {
-          this.$nextTick(() => {
-            refDom[0].foodNumber = 0
-          })
-          this.$store.dispatch('bottom_delete_basket_item', basketItem)
-        }
-      }
+    // 获取banner
+    this.$store.dispatch('home_get_banners', {})
+    if (this.basketChange) {
+      this._updateFoodItem()
     }
+    this.getCateData().then(() => {
+      let cateData = this.cateData
+      let currentCate = cateData[this.cateValue]
+      this.getFoods(currentCate).then(data => {
+        let basketParam = {
+          deskid: this.deskid
+        }
+        this.$store.dispatch('bottom_init_basket', true)
+        this.$store.dispatch('bottom_get_basket', basketParam).then(data => {
+          console.log(2)
+          this._updateFoodItem()
+          this.$store.dispatch('bottom_init_basket', false)
+        })
+      })
+    })
   }
 }
 </script>

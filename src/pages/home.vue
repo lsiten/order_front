@@ -84,6 +84,7 @@ export default {
               food: food,
               send: false
             })
+            this.$store.dispatch('bottom_set_basket_change', true)
             break
           case 'addorder':
             console.log(data)

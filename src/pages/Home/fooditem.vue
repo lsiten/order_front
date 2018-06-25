@@ -33,22 +33,11 @@ export default {
   methods: {
     changeFoodnumber (num) {
       this.foodNumber = num
-    }
-  },
-  computed: {
-    ...mapGetters({
-      deskid: 'com_get_desk_id',
-      client_id: 'ws_get_client_id',
-      isInit: 'bottom_get_isinit'
-    })
-  },
-  watch: {
-    foodNumber (value) {
-      if (this.isInit) {
-        return false
-      }
-      this.food.num = value
-      if (value > 0) {
+      this.food.num = num
+    },
+    addFood (num) {
+      this.food.num = num
+      if (num > 0) {
         this.$store.dispatch('bottom_add_basket', {
           food: this.food,
           deskid: this.deskid,
@@ -63,6 +52,21 @@ export default {
         })
         this.$store.dispatch('bottom_update_basket_total')
       }
+    }
+  },
+  computed: {
+    ...mapGetters({
+      deskid: 'com_get_desk_id',
+      client_id: 'ws_get_client_id',
+      isInit: 'bottom_get_isinit'
+    })
+  },
+  watch: {
+    foodNumber (value, oldvalue) {
+      if (this.isInit) {
+        return false
+      }
+      this.addFood(value)
     }
   },
   created () {

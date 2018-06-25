@@ -16,6 +16,7 @@ export default {
   data () {
     return {
       foodsTemp: [],
+      isChangeBasket: false,
       notes: ''
     }
   },
@@ -23,6 +24,7 @@ export default {
     ...mapGetters({
       basket: 'bottom_get_shopping_basket',
       deskid: 'com_get_desk_id',
+      basketChange: 'bottom_get_basket_change',
       client_id: 'ws_get_client_id'
     })
   },
@@ -44,10 +46,11 @@ export default {
     this.$store.dispatch('bottom_set_type', '')
   },
   watch: {
-    basket: {
-      deep: true,
-      handler: function () {
-        this._initBasket()
+    basketChange (val) {
+      if (this.isChangeBasket) {
+        this.isChangeBasket = false
+      } else {
+        val && this._initBasket()
       }
     },
     notes () {
@@ -64,7 +67,7 @@ export default {
         if (temp.num > 0) {
           fTemp.push(temp)
         } else {
-          this.$store.dispatch('bottom_change_basket_item', {
+          this.$store.dispatch('bottom_add_basket', {
             food: temp,
             deskid: this.deskid,
             client_id: this.client_id,
@@ -79,11 +82,14 @@ export default {
       return fTemp
     },
     change (food) {
-      this.$store.dispatch('bottom_change_basket_item', {
+      this.$store.dispatch('bottom_add_basket', {
         food: food,
         deskid: this.deskid,
         client_id: this.client_id,
         send: true
+      }).then(() => {
+        this.$store.dispatch('bottom_set_basket_change', true)
+        this._initBasket()
       })
     }
   }

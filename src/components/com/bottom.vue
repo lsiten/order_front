@@ -76,12 +76,6 @@ export default {
     Badge
   },
   watch: {
-    basket: {
-      deep: true,
-      handler: function () {
-        this._initBasket()
-      }
-    },
     totalNum () {
       if (parseInt(this.totalNum) > 0) {
         this.showBadge = true
@@ -117,6 +111,7 @@ export default {
       showDetail: false,
       value: 0,
       showBadge: false,
+      isChangeBasket: false,
       foodsTemp: []
     }
   },
@@ -186,11 +181,15 @@ export default {
       })
     },
     change (food) {
-      this.$store.dispatch('bottom_change_basket_item', {
+      this.isChangeBasket = true
+      this.$store.dispatch('bottom_add_basket', {
         food: food,
         deskid: this.deskid,
         client_id: this.client_id,
         send: true
+      }).then(data => {
+        this.$store.dispatch('bottom_set_basket_change', true)
+        this._initBasket()
       })
     },
     _initBasket () {
@@ -200,7 +199,7 @@ export default {
         if (temp.num > 0) {
           fTemp.push(temp)
         } else {
-          this.$store.dispatch('bottom_change_basket_item', {
+          this.$store.dispatch('bottom_add_basket', {
             food: temp,
             deskid: this.deskid,
             client_id: this.client_id,
