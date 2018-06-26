@@ -36,6 +36,15 @@ export default {
       showCenter: 'header_get_showCenter',
       gotoCenter: 'header_get_gotoCenter'
     })
+  },
+  created () {
+    if (this.showCenter) {
+      this.$store.dispatch('header_set_goto_center', () => {
+        this.$router.push({
+          name: 'orderlist'
+        })
+      })
+    }
   }
 }
 </script>

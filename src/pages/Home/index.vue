@@ -237,20 +237,8 @@ export default {
     this.foodScroller = this.$refs.rightFood
     // 获取banner
     this.$store.dispatch('home_get_banners', {})
-    if (this.basketChange) {
-      let basketParam = {
-        deskid: this.deskid
-      }
-      this.$store.dispatch('bottom_init_basket', true)
-      this.$store.dispatch('bottom_get_basket', basketParam).then(data => {
-        this._updateFoodItem()
-        this.$store.dispatch('bottom_init_basket', false)
-      })
-    }
-    this.getCateData().then(() => {
-      let cateData = this.cateData
-      let currentCate = cateData[this.cateValue]
-      this.getFoods(currentCate).then(data => {
+    if (!this.isFirstLoading) {
+      if (this.basketChange) {
         let basketParam = {
           deskid: this.deskid
         }
@@ -259,8 +247,24 @@ export default {
           this._updateFoodItem()
           this.$store.dispatch('bottom_init_basket', false)
         })
+      }
+    } else {
+      this.getCateData().then(() => {
+        let cateData = this.cateData
+        let currentCate = cateData[this.cateValue]
+        this.getFoods(currentCate).then(data => {
+          let basketParam = {
+            deskid: this.deskid
+          }
+          this.$store.dispatch('bottom_init_basket', true)
+          this.$store.dispatch('bottom_get_basket', basketParam).then(data => {
+            this._updateFoodItem()
+            this.$store.dispatch('bottom_init_basket', false)
+          })
+        })
       })
-    })
+      this.$store.dispatch('com_set_first_loading', false)
+    }
   }
 }
 </script>

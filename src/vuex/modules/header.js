@@ -38,6 +38,9 @@ const mutations = {
   },
   [types.HEADER_SET_SHOWCENTER] (state, showCenter) {
     state.showCenter = showCenter
+  },
+  [types.HEADER_SET_GOTO_CENTER] (state, tocenter) {
+    state.gotoCenter = tocenter
   }
 }
 
@@ -47,6 +50,11 @@ const actions = {
   },
   header_set_show_center ({commit}, center) {
     commit(types.HEADER_SET_SHOWCENTER, center)
+  },
+  header_set_goto_center ({commit}, tocenter) {
+    if (typeof tocenter === 'function') {
+      commit(types.HEADER_SET_GOTO_CENTER, tocenter)
+    }
   }
 }
 
