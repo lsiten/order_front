@@ -5,7 +5,7 @@
 
       </div>
       <div class="desk-num">
-        {{desk.num}}桌
+        {{desk.num}}号桌
       </div>
     </div>
     <div class="order-list">
